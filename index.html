@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PhoneCompare | New Year Edition</title>
+
+<style>
+/* ОСНОВНЫЕ НАСТРОЙКИ */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: #071426;
+  color: #f1f7ff;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+button,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+/* СНЕГ */
+
+.snowflake {
+  position: fixed;
+  top: -30px;
+  color: #ffffff;
+  pointer-events: none;
+  z-index: 20;
+  animation: snowfall linear infinite;
+  opacity: 0.8;
+}
+
+@keyframes snowfall {
+  0% {
+    transform: translateY(-30px) rotate(0deg);
+  }
+
+  100% {
+    transform: translateY(110vh) rotate(360deg);
+  }
+}
+
+/* ШАПКА */
+
+header {
+  text-align: center;
+  padding: 35px 20px;
+  background: linear-gradient(135deg, #102b4c, #12617a);
+  border-bottom: 2px solid #4cc9f0;
+}
+
+.garland {
+  color: #ffd166;
+  font-size: 24px;
+  letter-spacing: 8px;
+  margin-bottom: 15px;
+}
+
+header h1 {
+  font-size: 38px;
+  margin-bottom: 12px;
+}
+
+header p {
+  color: #c8e8ff;
+  font-size: 16px;
+}
+
+.header-decoration {
+  margin-top: 18px;
+  font-size: 25px;
+}
+
+/* НАВИГАЦИЯ */
+
+nav {
+  background: #0b1c32;
+  padding: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  border-bottom: 1px solid #244766;
+}
+
+nav a {
+  color: #d8f3ff;
+  text-decoration: none;
+  padding: 10px 15px;
+  border-radius: 20px;
+  transition: 0.3s;
+  font-size: 14px;
+}
+
+nav a:hover {
+  background: #176b87;
+  color: white;
+}
+
+/* ОСНОВНОЙ КОНТЕЙНЕР */
+
+.container {
+  max-width: 1100px;
+  margin: auto;
+  padding: 25px 18px;
+}
+
+/* СЕКЦИИ */
+
+section {
+  background: #10243c;
+  border: 1px solid #244766;
+  border-radius: 18px;
+  padding: 25px;
+  margin-bottom: 30px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+section h2 {
+  color: #75d7ff;
+  font-size: 25px;
+  margin-bottom: 18px;
+}
+
+.description {
+  color: #c2d7e9;
+  line-height: 1.7;
+  margin-bottom: 20px;
+}
+
+/* КНОПКИ */
+
+.main-button {
+  background: linear-gradient(135deg, #1685ad, #176b87);
+  color: white;
+  border: none;
+  padding: 13px 20px;
+  border-radius: 10px;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.main-button:hover {
+  background: linear-gradient(135deg, #20a6d1, #1685ad);
+  transform: translateY(-2px);
+}
+
+.main-button:active {
+  transform: scale(0.98);
+}
+
+/* СРАВНЕНИЕ */
+
+.selectors {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.selectors select {
+  width: 100%;
+  padding: 14px;
+  background: #eaf6ff;
+  color: #10243c;
+  border: 2px solid #4cc9f0;
+  border-radius: 10px;
+  outline: none;
+}
+
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: 12px;
+}
+
+table {
+  width: 100%;
+  min-width: 520px;
+  border-collapse: collapse;
+  background: #0c1d32;
+}
+
+th,
+td {
+  padding: 14px;
+  text-align: left;
+  border-bottom: 1px solid #31516e;
+}
+
+th {
+  color: #83dcff;
+  background: #173550;
+}
+
+td {
+  color: #e1edf8;
+}
+
+tr:hover td {
+  background: #142d47;
+}
+
+.conclusion {
+  background: #123b50;
+  border: 1px solid #28718d;
+  border-radius: 12px;
+  padding: 16px;
+  margin-top: 18px;
+  line-height: 1.7;
+  color: #d9f5ff;
+}
+
+/* КАРТОЧКИ */
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 16px;
+}
+
+.card {
+  background: #173550;
+  border: 1px solid #315c7b;
+  border-radius: 14px;
+  padding: 18px;
+  transition: 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  border-color: #4cc9f0;
+}
+
+.card h3 {
+  color: #8ce0ff;
+  margin-bottom: 12px;
+}
+
+.card p {
+  color: #d0e0ef;
+  line-height: 1.6;
+  margin-bottom: 8px;
+}
+
+/* API */
+
+.api-status {
+  background: #0b1c32;
+  border: 1px solid #31516e;
+  border-radius: 12px;
+  padding: 16px;
+  margin: 18px 0;
+  color: #d7eaff;
+  line-height: 1.6;
+}
+
+.api-status.loading {
+  border-color: #e8bd55;
+  color: #ffe5a1;
+}
+
+.api-status.success {
+  border-color: #46c98b;
+  color: #a9ffd1;
+}
+.api-status.error {
+  border-color: #ed7777;
+  color: #ffb0b0;
+}
+
+.api-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 16px;
+}
+
+.api-card {
+  background: #173550;
+  border: 1px solid #315c7b;
+  border-radius: 14px;
+  padding: 15px;
+  overflow: hidden;
+}
+
+.api-card img {
+  width: 100%;
+  height: 155px;
+  object-fit: contain;
+  background: #eaf6ff;
+  border-radius: 10px;
+  margin-bottom: 13px;
+}
+
+.api-card h3 {
+  color: #8ce0ff;
+  font-size: 17px;
+  margin-bottom: 10px;
+}
+
+.api-card p {
+  color: #d0e0ef;
+  line-height: 1.5;
+  font-size: 14px;
+  margin-bottom: 7px;
+}
+
+.api-note {
+  font-size: 13px;
+  color: #a9c9df;
+  margin-top: 15px;
+  line-height: 1.6;
+}
+
+/* ПРОЕКТ VS ИИ */
+
+.comparison-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.info-card {
+  background: #173550;
+  border: 1px solid #315c7b;
+  border-radius: 14px;
+  padding: 20px;
+}
+
+.info-card h3 {
+  color: #8ce0ff;
+  margin-bottom: 14px;
+}
+
+.info-card p {
+  color: #d0e0ef;
+  line-height: 1.8;
+}
+
+/* ПОДВАЛ */
+
+footer {
+  text-align: center;
+  padding: 25px 15px;
+  background: #091a2e;
+  border-top: 1px solid #31516e;
+  color: #a9c9df;
+  line-height: 1.7;
+}
+
+/* МОБИЛЬНАЯ ВЕРСИЯ */
+
+@media (max-width: 650px) {
+  header h1 {
+    font-size: 28px;
+  }
+
+  header {
+    padding: 28px 12px;
+  }
+
+  .selectors {
+    grid-template-columns: 1fr;
+  }
+
+  .comparison-grid {
+    grid-template-columns: 1fr;
+  }
+
+  section {
+    padding: 18px;
+  }
+
+  section h2 {
+    font-size: 22px;
+  }
+
+  nav {
+    gap: 5px;
+  }
+
+  nav a {
+    padding: 9px 10px;
+    font-size: 13px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="garland">✨ 🎄 ✨ 🎄 ✨</div>
+  <h1>📱 PhoneCompare</h1>
+  <p>Удобное сравнение смартфонов</p>
+  <div class="header-decoration">❄️ ☃️ ❄️</div>
+</header>
+
+<nav>
+  <a href="#home">Главная</a>
+  <a href="#compare">Сравнение</a>
+  <a href="#api">API</a>
+  <a href="#ai">Проект vs ИИ</a>
+</nav>
+
+<main class="container">
+
+  <!-- ГЛАВНАЯ -->
+
+  <section id="home">
+    <h2>🎅 Добро пожаловать!</h2>
+
+    <p class="description">
+      PhoneCompare — это сайт для сравнения смартфонов.
+      Здесь можно выбрать две модели, посмотреть их основные
+      характеристики и сравнить производительность, экран,
+      камеру, аккумулятор и стоимость.
+    </p>
+
+    <div class="cards">
+      <div class="card">
+        <h3>📊 Сравнение</h3>
+        <p>
+          Сравнивай два смартфона в удобной таблице.
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>🌐 API</h3>
+        <p>
+          Загружай информацию о смартфонах из внешнего источника.
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>🎄 Удобство</h3>
+        <p>
+          Пользуйся сайтом с компьютера или телефона.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- СРАВНЕНИЕ ТЕЛЕФОНОВ -->
+
+  <section id="compare">
+    <h2>📊 Сравнение смартфонов</h2>
+
+    <p class="description">
+      Выбери две модели смартфонов. Их характеристики
+      автоматически появятся в таблице.
+    </p>
+
+    <div class="selectors">
+      <select id="phone1" aria-label="Первый смартфон"></select>
+      <select id="phone2" aria-label="Второй смартфон"></select>
+    </div>
+
+    <div class="table-wrapper" id="comparison"></div>
+
+    <div class="conclusion" id="conclusion">
+      Выбери два смартфона для сравнения.
+    </div>
+  </section>
+
+  <!-- API -->
+
+  <section id="api">
+    <h2>🌐 Смартфоны из API</h2>
+
+    <p class="description">
+      В этом разделе используется API — интерфейс,
+      который позволяет получать данные с внешнего сервера.
+      Нажми кнопку, чтобы загрузить каталог смартфонов.
+    </p>
+
+    <button class="main-button" id="loadButton" type="button">
+      Загрузить смартфоны
+    </button>
+
+    <div class="api-status" id="apiStatus" role="status">
+      Состояние: Empty — данные ещё не загружены.
+    </div>
+
+    <div class="api-grid" id="apiGrid"></div>
+
+    <p class="api-note">
+      Примечание: каталог используется для демонстрации работы API.
+      Цены из него не являются актуальными ценами магазинов.
+    </p>
+  </section>
+<!-- ПРОЕКТ VS ИИ -->
+
+  <section id="ai">
+    <h2>🤖 Мой проект vs Искусственный интеллект</h2>
+
+    <p class="description">
+      Сравнение возможностей моего проекта и искусственного интеллекта.
+    </p>
+
+    <div class="comparison-grid">
+
+      <div class="info-card">
+        <h3>📱 PhoneCompare</h3>
+
+        <p>
+          • Быстрое сравнение двух смартфонов.<br>
+          • Удобная таблица характеристик.<br>
+          • Автоматическое отображение результата.<br>
+          • Простой и понятный интерфейс.<br>
+          • Загрузка данных через API.
+        </p>
+      </div>
+
+      <div class="info-card">
+        <h3>🤖 Искусственный интеллект</h3>
+
+        <p>
+          • Ответы на сложные вопросы.<br>
+          • Объяснение различий между моделями.<br>
+          • Анализ потребностей пользователя.<br>
+          • Помощь в выборе устройства.<br>
+          • Работа с большим количеством информации.
+        </p>
+      </div>
+
+    </div>
+
+    <div class="conclusion">
+      <b>Вывод:</b>
+      мой проект лучше подходит для быстрого сравнения
+      характеристик смартфонов в таблице.
+      Искусственный интеллект лучше справляется
+      с объяснениями и сложными вопросами.
+      Эти инструменты могут дополнять друг друга.
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p>🎄 PhoneCompare © 2026</p>
+  <p>Создано с новогодним настроением ❄️</p>
+</footer>
+
+<script>
+"use strict";
+
+/* =====================================
+   1. БАЗА ДАННЫХ СМАРТФОНОВ
+===================================== */
+
+const phones = [
+  {
+    name: "Samsung Galaxy S25 Ultra",
+    processor: "Snapdragon 8 Elite",
+    screen: "6.9 дюйма AMOLED",
+    camera: "200 МП",
+    battery: "5000 мАч",
+    price: "от 600 000 ₸"
+  },
+
+  {
+    name: "vivo X200 Pro mini",
+    processor: "Dimensity 9400",
+    screen: "6.31 дюйма AMOLED",
+    camera: "50 МП",
+    battery: "5700 мАч",
+    price: "от 300 000 ₸"
+  },
+
+  {
+    name: "Xiaomi 15",
+    processor: "Snapdragon 8 Elite",
+    screen: "6.36 дюйма AMOLED",
+    camera: "50 МП",
+    battery: "5400 мАч",
+    price: "от 350 000 ₸"
+  },
+
+  {
+    name: "iPhone 17 Pro Max",
+    processor: "Apple A19 Pro",
+    screen: "6.9 дюйма OLED",
+    camera: "48 МП",
+    battery: "5088 мАч",
+    price: "от 700 000 ₸"
+  },
+
+  {
+    name: "OnePlus 13",
+    processor: "Snapdragon 8 Elite",
+    screen: "6.82 дюйма AMOLED",
+    camera: "50 МП",
+    battery: "6000 мАч",
+    price: "от 400 000 ₸"
+  },
+
+  {
+    name: "Google Pixel 10 Pro",
+    processor: "Google Tensor G5",
+    screen: "6.3 дюйма OLED",
+    camera: "50 МП",
+    battery: "4870 мАч",
+    price: "от 450 000 ₸"
+  },
+
+  {
+    name: "OPPO Find X8 Pro",
+    processor: "Dimensity 9400",
+    screen: "6.78 дюйма AMOLED",
+    camera: "50 МП",
+    battery: "5910 мАч",
+    price: "от 500 000 ₸"
+  },
+
+  {
+    name: "HONOR Magic7 Pro",
+    processor: "Snapdragon 8 Elite",
+    screen: "6.8 дюйма OLED",
+    camera: "50 МП",
+    battery: "5850 мАч",
+    price: "от 480 000 ₸"
+  }
+];
+
+/* =====================================
+   2. ПОЛУЧЕНИЕ ЭЛЕМЕНТОВ СТРАНИЦЫ
+===================================== */
+
+const phone1 = document.getElementById("phone1");
+const phone2 = document.getElementById("phone2");
+
+const comparison = document.getElementById("comparison");
+const conclusion = document.getElementById("conclusion");
+
+const loadButton = document.getElementById("loadButton");
+const apiStatus = document.getElementById("apiStatus");
+const apiGrid = document.getElementById("apiGrid");
+
+/* =====================================
+   3. ЗАПОЛНЕНИЕ СПИСКОВ
+===================================== */
+
+function fillPhoneSelectors() {
+  phones.forEach(function(phone, index) {
+    const option1 = document.createElement("option");
+    const option2 = document.createElement("option");
+
+    option1.value = String(index);
+    option2.value = String(index);
+
+    option1.textContent = phone.name;
+    option2.textContent = phone.name;
+
+    phone1.appendChild(option1);
+    phone2.appendChild(option2);
+  });
+
+  phone1.value = "0";
+  phone2.value = "1";
+}
+/* =====================================
+   4. СРАВНЕНИЕ СМАРТФОНОВ
+===================================== */
+
+function comparePhones() {
+  const firstIndex = Number(phone1.value);
+  const secondIndex = Number(phone2.value);
+
+  const first = phones[firstIndex];
+  const second = phones[secondIndex];
+
+  comparison.replaceChildren();
+
+  if (!first || !second) {
+    conclusion.textContent =
+      "Не удалось найти выбранные смартфоны.";
+    return;
+  }
+
+  if (firstIndex === secondIndex) {
+    conclusion.textContent =
+      "Пожалуйста, выбери две разные модели смартфонов.";
+    return;
+  }
+
+  const table = document.createElement("table");
+
+  const header = document.createElement("tr");
+
+  const headers = [
+    "Характеристика",
+    first.name,
+    second.name
+  ];
+
+  headers.forEach(function(text) {
+    const th = document.createElement("th");
+    th.textContent = text;
+    header.appendChild(th);
+  });
+
+  table.appendChild(header);
+
+  const rows = [
+    ["Процессор", first.processor, second.processor],
+    ["Экран", first.screen, second.screen],
+    ["Камера", first.camera, second.camera],
+    ["Аккумулятор", first.battery, second.battery],
+    ["Цена", first.price, second.price]
+  ];
+
+  rows.forEach(function(row) {
+    const tr = document.createElement("tr");
+
+    row.forEach(function(value) {
+      const td = document.createElement("td");
+      td.textContent = value;
+      tr.appendChild(td);
+    });
+
+    table.appendChild(tr);
+  });
+
+  comparison.appendChild(table);
+
+  conclusion.textContent =
+    "Смартфоны успешно сравнены! Лучший выбор зависит " +
+    "от твоих приоритетов: производительности, камеры, " +
+    "экрана, аккумулятора или цены.";
+}
+
+/* =====================================
+   5. СОБЫТИЯ СРАВНЕНИЯ
+===================================== */
+
+phone1.addEventListener("change", comparePhones);
+phone2.addEventListener("change", comparePhones);
+
+/* =====================================
+   6. СОСТОЯНИЯ API
+===================================== */
+
+function setApiState(state, message) {
+  apiStatus.className = "api-status";
+
+  if (state === "Loading") {
+    apiStatus.classList.add("loading");
+  }
+
+  if (state === "Success") {
+    apiStatus.classList.add("success");
+  }
+
+  if (state === "Error") {
+    apiStatus.classList.add("error");
+  }
+
+  apiStatus.textContent =
+    "Состояние: " + state + " — " + message;
+}
+
+/* =====================================
+   7. СОЗДАНИЕ КАРТОЧКИ API
+===================================== */
+
+function createApiCard(product) {
+  const card = document.createElement("article");
+  card.className = "api-card";
+
+  const image = document.createElement("img");
+
+  image.src = product.thumbnail || "";
+  image.alt = product.title || "Смартфон";
+  image.loading = "lazy";
+
+  image.addEventListener("error", function() {
+    image.style.display = "none";
+  });
+
+  const title = document.createElement("h3");
+  title.textContent = product.title || "Без названия";
+
+  const brand = document.createElement("p");
+  brand.textContent =
+    "Бренд: " + (product.brand || "Не указан");
+
+  const price = document.createElement("p");
+  price.textContent =
+    "Цена в каталоге: " + product.price + " $";
+
+  const rating = document.createElement("p");
+  rating.textContent =
+    "Рейтинг: " + (product.rating || "Нет данных");
+
+  const description = document.createElement("p");
+  description.textContent =
+    product.description || "Описание отсутствует.";
+
+  card.appendChild(image);
+  card.appendChild(title);
+  card.appendChild(brand);
+  card.appendChild(price);
+  card.appendChild(rating);
+  card.appendChild(description);
+
+  return card;
+}
+
+/* =====================================
+   8. ЗАГРУЗКА ДАННЫХ ИЗ API
+===================================== */
+
+async function loadPhones() {
+  apiGrid.replaceChildren();
+
+  setApiState(
+    "Loading",
+    "Загружаем данные с сервера..."
+  );
+
+  loadButton.disabled = true;
+  loadButton.textContent = "Загрузка...";
+
+  try {
+    const response = await fetch(
+      "https://dummyjson.com/products/category/smartphones?limit=12"
+    );
+if (!response.ok) {
+      throw new Error(
+        "Сервер ответил с ошибкой: " + response.status
+      );
+    }
+
+    const data = await response.json();
+
+    if (
+      !data ||
+      !Array.isArray(data.products) ||
+      data.products.length === 0
+    ) {
+      setApiState(
+        "Empty",
+        "Список смартфонов пуст."
+      );
+
+      return;
+    }
+
+    data.products.forEach(function(product) {
+      const card = createApiCard(product);
+      apiGrid.appendChild(card);
+    });
+
+    setApiState(
+      "Success",
+      "Смартфоны успешно загружены!"
+    );
+
+  } catch (error) {
+    console.error("Ошибка API:", error);
+
+    setApiState(
+      "Error",
+      "Не удалось загрузить данные. Проверь интернет и попробуй снова."
+    );
+
+  } finally {
+    loadButton.disabled = false;
+    loadButton.textContent = "Загрузить смартфоны";
+  }
+}
+
+/* =====================================
+   9. КНОПКА ЗАГРУЗКИ API
+===================================== */
+
+loadButton.addEventListener("click", loadPhones);
+
+/* =====================================
+   10. НОВОГОДНИЙ СНЕГ
+===================================== */
+
+function createSnow() {
+  const snowSymbols = ["❄", "❅", "❆"];
+
+  for (let i = 0; i < 35; i++) {
+    const snow = document.createElement("div");
+
+    snow.className = "snowflake";
+
+    snow.textContent =
+      snowSymbols[Math.floor(Math.random() * snowSymbols.length)];
+
+    snow.style.left = Math.random() * 100 + "vw";
+
+    snow.style.animationDuration =
+      (6 + Math.random() * 10) + "s";
+
+    snow.style.animationDelay =
+      (Math.random() * 10) + "s";
+
+    snow.style.fontSize =
+      (10 + Math.random() * 14) + "px";
+
+    document.body.appendChild(snow);
+  }
+}
+
+/* =====================================
+   11. ЗАПУСК ПРИЛОЖЕНИЯ
+===================================== */
+
+function startApp() {
+  fillPhoneSelectors();
+  comparePhones();
+  createSnow();
+}
+
+startApp();
+
+</script>
+
+</body>
+</html>
